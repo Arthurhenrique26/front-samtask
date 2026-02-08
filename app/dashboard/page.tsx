@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
-import { TodayView } from '@/components/dashboard/today-view'
+import { TimelineView } from '@/components/dashboard/timeline-view' // Importe o novo componente
 import { EmotionalCheckinPrompt } from '@/components/dashboard/emotional-checkin-prompt'
+import { Button } from '@/components/ui/button'
+import { Plus } from 'lucide-react'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -8,25 +10,19 @@ export default async function DashboardPage() {
 
   if (!user) return null
 
-  // Get today's tasks
+  // Buscar tarefas (com filtro para não mostrar concluídas muito antigas se quiser)
+  const { data: tasks } = await supabase
+    .from('tasks')
+    .select(`*, category:categories(*)`)
+    .eq('user_id', user.id)
+    .order('due_date', { ascending: true }) // Importante para a timeline
+
+  // Check-in emocional logic (mantém igual)
   const today = new Date()
   today.setHours(0, 0, 0, 0)
   const tomorrow = new Date(today)
   tomorrow.setDate(tomorrow.getDate() + 1)
-
-  // Get all incomplete tasks and tasks with today's due date
-  const { data: tasks } = await supabase
-    .from('tasks')
-    .select(`
-      *,
-      category:categories(*)
-    `)
-    .eq('user_id', user.id)
-    .is('parent_id', null)
-    .order('status', { ascending: true })
-    .order('priority', { ascending: false })
-
-  // Check if user has done a check-in today
+  
   const { data: todayCheckin } = await supabase
     .from('emotional_checkins')
     .select('*')
@@ -35,33 +31,23 @@ export default async function DashboardPage() {
     .lt('created_at', tomorrow.toISOString())
     .single()
 
-  // Get categories for task creation
-  const { data: categories } = await supabase
-    .from('categories')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('name')
-
-  // Get profile for daily goal
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single()
-
-  const completedToday = tasks?.filter(t => t.status === 'done').length || 0
-  const dailyGoal = profile?.daily_goal || 5
-
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 pb-20">
+      {/* Header da Página */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Foco de Hoje</h1>
+          <p className="text-muted-foreground">Sua trilha de alta performance para hoje.</p>
+        </div>
+        <Button className="bg-brand-violet hover:bg-brand-violet/90 shadow-neon-violet transition-all">
+          <Plus className="w-4 h-4 mr-2" /> Nova Tarefa
+        </Button>
+      </div>
+
       {!todayCheckin && <EmotionalCheckinPrompt />}
       
-      <TodayView 
-        tasks={tasks || []} 
-        categories={categories || []}
-        completedToday={completedToday}
-        dailyGoal={dailyGoal}
-      />
+      {/* A Nova Timeline Vertical */}
+      <TimelineView tasks={tasks || []} />
     </div>
   )
 }

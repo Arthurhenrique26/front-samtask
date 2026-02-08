@@ -66,7 +66,8 @@ export interface PomodoroSession {
   task_id: string | null
   duration_minutes: number
   type: PomodoroType
-  completed_at: string
+  created_at: string   // <--- ADICIONADO AQUI PARA CORRIGIR O ERRO
+  completed_at?: string
 }
 
 export interface EmotionalCheckin {

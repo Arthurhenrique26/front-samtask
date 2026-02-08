@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import type { User } from '@supabase/supabase-js'
 import type { Profile } from '@/lib/types'
 import { createClient } from '@/lib/supabase/client'
@@ -11,150 +11,89 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from '@/components/ui/sheet'
-import {
-  CheckSquare,
-  Menu,
-  Sun,
-  ListTodo,
-  Kanban,
-  Calendar,
-  Timer,
-  BarChart3,
-  Settings,
-  LogOut,
-  User as UserIcon,
-} from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { Menu, Settings, LogOut } from 'lucide-react'
 import { toast } from 'sonner'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useSidebar } from '@/components/dashboard/sidebar-context' // Importe o contexto
 
 interface DashboardHeaderProps {
   user: User
   profile: Profile | null
 }
 
-const navigation = [
-  { name: 'Hoje', href: '/dashboard', icon: Sun },
-  { name: 'Tarefas', href: '/dashboard/tasks', icon: ListTodo },
-  { name: 'Kanban', href: '/dashboard/kanban', icon: Kanban },
-  { name: 'Calendario', href: '/dashboard/calendar', icon: Calendar },
-  { name: 'Pomodoro', href: '/dashboard/pomodoro', icon: Timer },
-  { name: 'Relatorios', href: '/dashboard/reports', icon: BarChart3 },
-  { name: 'Configuracoes', href: '/dashboard/settings', icon: Settings },
-]
-
 export function DashboardHeader({ user, profile }: DashboardHeaderProps) {
-  const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { toggle } = useSidebar() // Usa a função toggle do nosso contexto
 
   async function handleSignOut() {
     const { error } = await supabase.auth.signOut()
-    
     if (error) {
       toast.error('Erro ao sair')
       return
     }
-
-    router.push('/')
+    router.push('/auth/login')
     router.refresh()
   }
 
+  const userInitials = (profile?.full_name || user.email || 'U').substring(0, 2).toUpperCase()
+
   return (
-    <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-border bg-card px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
-      {/* Mobile menu button */}
-      <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-        <SheetTrigger asChild>
-          <Button variant="ghost" size="icon" className="lg:hidden">
-            <Menu className="h-6 w-6" />
-            <span className="sr-only">Abrir menu</span>
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="w-64 p-0">
-          <div className="flex h-full flex-col">
-            {/* Logo */}
-            <div className="flex h-16 shrink-0 items-center px-6 border-b border-border">
-              <Link href="/dashboard" className="flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <CheckSquare className="w-5 h-5 text-primary-foreground" />
-                </div>
-                <span className="text-lg font-bold text-foreground">TaskFlow</span>
-              </Link>
-            </div>
-
-            {/* Navigation */}
-            <nav className="flex-1 px-4 py-4">
-              <ul className="space-y-1">
-                {navigation.map((item) => {
-                  const isActive = item.href === '/dashboard' 
-                    ? pathname === '/dashboard'
-                    : pathname.startsWith(item.href)
-
-                  return (
-                    <li key={item.name}>
-                      <Link href={item.href} onClick={() => setMobileMenuOpen(false)}>
-                        <Button
-                          variant={isActive ? 'secondary' : 'ghost'}
-                          className={cn(
-                            'w-full justify-start',
-                            isActive && 'bg-primary/10 text-primary hover:bg-primary/20'
-                          )}
-                        >
-                          <item.icon className="mr-3 h-5 w-5" />
-                          {item.name}
-                        </Button>
-                      </Link>
-                    </li>
-                  )
-                })}
-              </ul>
-            </nav>
-          </div>
-        </SheetContent>
-      </Sheet>
+    <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-white/5 bg-background/60 px-4 shadow-sm backdrop-blur-xl sm:gap-x-6 sm:px-6 lg:px-8">
+      
+      {/* Botão Menu Burguer (Agora visível SEMPRE e controla a Sidebar) */}
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        className="text-muted-foreground hover:text-white"
+        onClick={toggle}
+      >
+        <Menu className="h-6 w-6" />
+        <span className="sr-only">Alternar Menu</span>
+      </Button>
 
       {/* Spacer */}
       <div className="flex-1" />
 
       {/* User menu */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold">
-              {(profile?.full_name || user.email)?.charAt(0).toUpperCase()}
-            </div>
-            <span className="hidden sm:inline text-sm font-medium">
-              {profile?.full_name || 'Usuario'}
-            </span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
-          <div className="px-2 py-1.5">
-            <p className="text-sm font-medium">{profile?.full_name || 'Usuario'}</p>
-            <p className="text-xs text-muted-foreground">{user.email}</p>
-          </div>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem asChild>
-            <Link href="/dashboard/settings">
-              <Settings className="mr-2 h-4 w-4" />
-              Configuracoes
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">
-            <LogOut className="mr-2 h-4 w-4" />
-            Sair
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <div className="flex items-center gap-4">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="relative h-9 w-9 rounded-full ring-offset-background hover:bg-white/5 focus:ring-0">
+              <Avatar className="h-9 w-9 border border-white/10 transition-transform hover:scale-105">
+                <AvatarImage src={profile?.avatar_url || ''} alt={profile?.full_name || ''} />
+                <AvatarFallback className="bg-brand-violet/20 text-brand-violet font-bold">
+                    {userInitials}
+                </AvatarFallback>
+              </Avatar>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56 bg-card/95 backdrop-blur-xl border-white/10 text-foreground">
+            <DropdownMenuLabel className="font-normal">
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium leading-none text-white">{profile?.full_name || 'Usuário'}</p>
+                <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator className="bg-white/10" />
+            <DropdownMenuItem asChild className="focus:bg-white/10 focus:text-white cursor-pointer">
+              <Link href="/dashboard/settings">
+                <Settings className="mr-2 h-4 w-4" />
+                Configurações
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator className="bg-white/10" />
+            <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:bg-destructive/10 focus:text-destructive cursor-pointer">
+              <LogOut className="mr-2 h-4 w-4" />
+              Sair
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </header>
   )
 }

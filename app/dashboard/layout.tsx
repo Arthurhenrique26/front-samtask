@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { DashboardSidebar } from '@/components/dashboard/sidebar'
 import { DashboardHeader } from '@/components/dashboard/header'
 import { Toaster } from '@/components/ui/sonner'
+import { SidebarProvider } from '@/components/dashboard/sidebar-context'
 
 export default async function DashboardLayout({
   children,
@@ -24,15 +25,19 @@ export default async function DashboardLayout({
     .single()
 
   return (
-    <div className="min-h-screen bg-background">
-      <DashboardSidebar user={user} profile={profile} />
-      <div className="lg:pl-64">
-        <DashboardHeader user={user} profile={profile} />
-        <main className="p-4 md:p-6 lg:p-8">
-          {children}
-        </main>
+    <SidebarProvider>
+      <div className="min-h-screen bg-background relative">
+        {/* A Sidebar agora é "flutuante", não ocupa espaço no fluxo */}
+        <DashboardSidebar user={user} profile={profile} />
+        
+        {/* Conteúdo principal ocupa 100% da tela sempre */}
+        <div className="w-full transition-all duration-300">
+          <DashboardHeader user={user} profile={profile} />
+          <main className="p-4 md:p-6 lg:p-8">
+            {children}
+          </main>
+        </div>
       </div>
-      <Toaster />
-    </div>
+    </SidebarProvider>
   )
 }

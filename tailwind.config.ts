@@ -17,6 +17,17 @@ const config: Config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        brand: {
+          violet: 'hsl(262 83% 58%)',
+          cyan: 'hsl(199 89% 48%)',
+          emerald: 'hsl(160 84% 39%)',
+          rose: 'hsl(350 89% 60%)',
+      },
+      boxShadow: {
+        'neon-violet': '0 0 5px hsl(262 83% 58% / 0.5), 0 0 20px hsl(262 83% 58% / 0.3)',
+        'neon-cyan': '0 0 5px hsl(199 89% 48% / 0.5), 0 0 20px hsl(199 89% 48% / 0.3)',
+        'neon-rose': '0 0 5px hsl(350 89% 60% / 0.5), 0 0 20px hsl(350 89% 60% / 0.3)',
+      },
         popover: {
           DEFAULT: 'hsl(var(--popover))',
           foreground: 'hsl(var(--popover-foreground))',

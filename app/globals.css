@@ -2,141 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-}
-
 @layer base {
-  /* Light theme - minimal, for completeness */
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 239 84% 67%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 239 84% 67%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 239 84% 67%;
-    --chart-1: 239 84% 67%;
-    --chart-2: 160 84% 39%;
-    --chart-3: 43 96% 56%;
-    --chart-4: 0 84% 60%;
-    --chart-5: 262 83% 58%;
-    --radius: 0.5rem;
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222 47% 11%;
-    --sidebar-primary: 239 84% 67%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 40% 96%;
-    --sidebar-accent-foreground: 222 47% 11%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 239 84% 67%;
-    --success: 160 84% 39%;
-    --success-foreground: 0 0% 100%;
-    --warning: 43 96% 56%;
-    --warning-foreground: 222 47% 11%;
-  }
+    /* Tema Padrão (Dark Focus por natureza) */
+    --background: 222 47% 6%; /* Slate-950 profundo */
+    --foreground: 210 40% 98%;
 
-  /* Dark theme - Modern Dark SaaS (Linear.app style) */
-  .dark {
-    --background: 222 47% 5%;
-    --foreground: 213 31% 91%;
-    --card: 222 47% 7%;
-    --card-foreground: 213 31% 91%;
-    --popover: 222 47% 7%;
-    --popover-foreground: 213 31% 91%;
-    --primary: 239 84% 67%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 222 47% 11%;
-    --secondary-foreground: 213 31% 91%;
-    --muted: 222 47% 11%;
-    --muted-foreground: 215 20% 55%;
-    --accent: 239 84% 67%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 62% 50%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 222 47% 14%;
-    --input: 222 47% 14%;
-    --ring: 239 84% 67%;
-    --chart-1: 239 84% 67%;
-    --chart-2: 160 84% 39%;
-    --chart-3: 43 96% 56%;
-    --chart-4: 0 84% 60%;
-    --chart-5: 262 83% 58%;
-    --sidebar-background: 222 47% 7%;
-    --sidebar-foreground: 213 31% 91%;
-    --sidebar-primary: 239 84% 67%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 47% 11%;
-    --sidebar-accent-foreground: 213 31% 91%;
-    --sidebar-border: 222 47% 14%;
-    --sidebar-ring: 239 84% 67%;
-    --success: 160 84% 39%;
-    --success-foreground: 0 0% 100%;
-    --warning: 43 96% 56%;
-    --warning-foreground: 222 47% 11%;
-  }
+    --card: 222 47% 10%; /* Um pouco mais claro que o fundo */
+    --card-foreground: 210 40% 98%;
 
-  /* Theme color variants */
-  .theme-indigo {
-    --primary: 239 84% 67%;
-    --accent: 239 84% 67%;
-    --ring: 239 84% 67%;
-    --sidebar-primary: 239 84% 67%;
-    --sidebar-ring: 239 84% 67%;
-  }
+    --popover: 222 47% 10%;
+    --popover-foreground: 210 40% 98%;
 
-  .theme-violet {
-    --primary: 262 83% 58%;
-    --accent: 262 83% 58%;
+    --primary: 262 83% 58%; /* Violeta Neon Principal */
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 217 33% 17%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 33% 20%;
+    --input: 217 33% 20%;
     --ring: 262 83% 58%;
-    --sidebar-primary: 262 83% 58%;
-    --sidebar-ring: 262 83% 58%;
-  }
 
-  .theme-emerald {
-    --primary: 160 84% 39%;
-    --accent: 160 84% 39%;
-    --ring: 160 84% 39%;
-    --sidebar-primary: 160 84% 39%;
-    --sidebar-ring: 160 84% 39%;
-  }
-
-  .theme-rose {
-    --primary: 350 89% 60%;
-    --accent: 350 89% 60%;
-    --ring: 350 89% 60%;
-    --sidebar-primary: 350 89% 60%;
-    --sidebar-ring: 350 89% 60%;
-  }
-
-  .theme-amber {
-    --primary: 38 92% 50%;
-    --accent: 38 92% 50%;
-    --ring: 38 92% 50%;
-    --sidebar-primary: 38 92% 50%;
-    --sidebar-ring: 38 92% 50%;
-  }
-
-  .theme-sky {
-    --primary: 199 89% 48%;
-    --accent: 199 89% 48%;
-    --ring: 199 89% 48%;
-    --sidebar-primary: 199 89% 48%;
-    --sidebar-ring: 199 89% 48%;
+    --radius: 0.75rem;
+    
+    /* Cores Semânticas (Neon) */
+    --status-todo: 215 20% 65%;
+    --status-progress: 199 89% 48%; /* Azul Sky */
+    --status-done: 160 84% 39%;     /* Esmeralda */
+    --status-urgent: 350 89% 60%;   /* Rose */
   }
 }
 
@@ -146,5 +49,26 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Utilitários de Alta Performance Visual */
+@layer utilities {
+  .glass-panel {
+    @apply bg-card/60 backdrop-blur-md border border-white/5;
+  }
+  
+  .neon-border-violet {
+    box-shadow: 0 0 5px theme('colors.violet.500/20'), 0 0 15px theme('colors.violet.500/10');
+  }
+  
+  /* Timeline Line Gradient */
+  .timeline-line-gradient {
+    background: linear-gradient(180deg, 
+      rgba(99, 102, 241, 0) 0%, 
+      rgba(99, 102, 241, 0.5) 15%, 
+      rgba(99, 102, 241, 0.5) 85%, 
+      rgba(99, 102, 241, 0) 100%
+    );
   }
 }
