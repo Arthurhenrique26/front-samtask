@@ -1,6 +1,7 @@
 export type TaskStatus = 'todo' | 'in_progress' | 'done'
 export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent'
 export type PomodoroType = 'work' | 'short_break' | 'long_break'
+export type TeamRole = 'owner' | 'admin' | 'member'
 
 export interface Profile {
   id: string
@@ -12,6 +13,26 @@ export interface Profile {
   long_break: number
   created_at: string
   updated_at: string
+}
+
+export interface Team {
+  id: string
+  name: string
+  description: string | null
+  owner_id: string
+  invite_code: string
+  created_at: string
+  updated_at: string
+}
+
+export interface TeamMember {
+  id: string
+  team_id: string
+  user_id: string
+  role: TeamRole
+  joined_at: string
+  // Join com Profile para pegar nome/foto
+  profile?: Profile
 }
 
 export interface Category {
@@ -34,6 +55,8 @@ export interface Tag {
 export interface Task {
   id: string
   user_id: string
+  team_id: string | null // Novo campo
+  assignee_id: string | null // Novo campo
   category_id: string | null
   parent_id: string | null
   title: string
@@ -53,6 +76,7 @@ export interface Task {
   category?: Category | null
   tags?: Tag[]
   subtasks?: Task[]
+  assignee?: Profile | null // Para mostrar quem é o responsável
 }
 
 export interface TaskTag {
@@ -66,7 +90,7 @@ export interface PomodoroSession {
   task_id: string | null
   duration_minutes: number
   type: PomodoroType
-  created_at: string   // <--- ADICIONADO AQUI PARA CORRIGIR O ERRO
+  created_at: string
   completed_at?: string
 }
 
@@ -92,6 +116,7 @@ export interface TaskFilters {
   due_date_from?: string
   due_date_to?: string
   is_today?: boolean
+  team_id?: string // Filtro por equipe
 }
 
 export interface TaskSort {
